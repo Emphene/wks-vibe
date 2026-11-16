@@ -7,9 +7,8 @@ Read before writing code cells. Most failures in this kind of notebook come from
 2. No interactive widgets
 3. Reproducibility and dependencies
 4. QuantLib conventions
-5. QuantLib pitfalls
-6. Visualization standards
-7. Mermaid diagrams (summary)
+5. Visualization standards
+6. Mermaid diagrams (summary)
 
 ---
 
@@ -55,18 +54,7 @@ Notebooks in this series do not use `mo.ui.*` input elements (sliders, dropdowns
 - **Flat vol and single curve** are simplifications; label them. Move to surfaces or OIS multi-curve when the theme needs it and say what changed.
 - **Check API details by running.** QuantLib-Python signatures differ across versions (e.g. `option.payoff()` returns the base `Payoff`, which has no `strike()`; keep the strike in your own parameters).
 
-## 5. QuantLib pitfalls to surface in "Pitfalls"
-
-- Evaluation date set after objects are built
-- Day-count mismatch between curve, vol surface and the time used in a closed form
-- Settlement days and holiday calendars shifting cash-flow dates
-- Greeks not provided by an engine (`RuntimeError`): fall back to bump-and-reval
-- Bump too small (round-off) or too large (convexity bias): show a stability plot
-- MC error: always report the standard error (`errorEstimate()`)
-- FX: dividend yield vs foreign rate (Garman-Kohlhagen is BSM with `q = r_f`)
-
-## 6. Visualization standards
-7. Mermaid diagrams (summary)
+## 5. Visualization standards
 
 - **matplotlib only**, through the shared helpers in `common/plotting.py` (`line_figure`, `payoff_figure`, `distribution_figure`, `fan_figure`, `waterfall_figure`); colorblind-safe Okabe-Ito palette.
 - Build figures with the object-oriented API (`matplotlib.figure.Figure`, or `fig, ax = plt.subplots()` for custom plots), not implicit `plt.plot` state, and return the figure as the last expression of the cell. Never call `plt.show()`.
@@ -76,7 +64,7 @@ Notebooks in this series do not use `mo.ui.*` input elements (sliders, dropdowns
 - Mark key quantities (strike, VaR/ES, PFE quantile, EEPE).
 - Every conceptual claim gets a figure: payoffs, curves, price and Greek profiles, exposure profiles, P&L waterfalls, loss distributions.
 
-## 7. Mermaid diagrams (summary; full rules in `mermaid-diagrams.md`)
+## 6. Mermaid diagrams (summary; full rules in `mermaid-diagrams.md`)
 
 - Structure (layers, object graphs, pipelines, decision trees, cash-flow sequences, life cycles) is drawn in Mermaid with `diagram()` from `common/diagrams.py`; quantities on axes stay matplotlib.
 - Output is the last expression of a cell, like a figure. Diagram cells use `hide_code=True` (the code is Mermaid source, not the content).

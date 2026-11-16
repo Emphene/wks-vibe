@@ -22,9 +22,8 @@
 #     Validation here), or directly below the heading cell (Header, Summary,
 #     References) as a section intro (unless it already has one). Add matching intros 
 #     if you add cells.
-#   * This is a demonstration notebook, not a tutorial: no learning objectives, exercises or
-#     level/time estimates. Coverage goes into QuantLib features (header + section 3) and desk
-#     applications (section 6, catalogue in references/front-middle-office-applications.md).
+#   * This is a demonstration notebook. Coverage goes into QuantLib features (header + section 3) 
+#     and desk applications (section 6, catalogue in references/front-middle-office-applications.md).
 #   * Placeholder content: European option, T3 Pricing. Replace every {{PLACEHOLDER}}
 #     (they appear only inside strings/comments so the file stays runnable as-is).
 #   * Code reuse = IMPORTS, never embedding. Instrument/theme-specific code is imported
