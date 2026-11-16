@@ -12,8 +12,8 @@ One instrument, modeled, priced and risk-managed in QuantLib under one theme, th
 - **Data → matplotlib** (`common/plotting.py`); no plotly or interactive plotting libraries.
 - **Mermaid → structure only:** layers, object graphs, pipelines, decision trees, who-pays-whom, life cycles, via `diagram()` (`common/diagrams.py`). Static plain-string source; 2–5 per notebook; one idea, ≤ ~12 nodes; real QuantLib and function names; series colour vocabulary; takeaway caption. A ```` ```mermaid ```` fence in `mo.md` does not render. Read `references/mermaid-diagrams.md`.
 - **No interactive widgets:** no `mo.ui.*` (sliders, dropdowns, switches, buttons, tabs), no Mermaid `click`. Exploration static only: parameter sweeps, scenario tables, side-by-side plots. Display allowed: `mo.md`, `mo.callout`, `mo.accordion`, `mo.vstack`, `diagram()`.
-- **No embedding, no shared state:** never `app.embed()`; each notebook runs alone; imports carry code, never state. `mo.embed`/`mo.notebook` do not exist — that request means reuse → imports.
-- **Demonstrate, don't tutor:** no learning objectives, exercises, quizzes, level or time estimates. Prose = assumptions, why this object or engine, conventions, results; depth → mathematics, QuantLib coverage, validation, desk applications.
+- **No embedding, no shared state:** never `app.embed()`; each notebook runs alone; imports carry code, never state.
+- **Demonstrate:** Prose = assumptions, why this object or engine, conventions, results; depth → mathematics, QuantLib coverage, validation, desk applications.
 - **Import, don't copy:** reference implementations (builders, closed forms, pricers, Greek and exposure engines) stay in the notebook that defines them, imported via `@app.function`; one trusted implementation per piece of logic. `common/` = generic, instrument-agnostic helpers only. Read `references/code-reuse-by-import.md`.
 - **Cell intros** (non-markdown cell = visible `@app.cell`, `diagram()`, `mo.accordion()`; markdown = pure `mo.md(...)`, `hide_code` irrelevant). Section with >1 non-markdown cell: immediately above each, `@app.cell(hide_code=True)` wrapping `mo.md(r"""…""")` = `###` title (sentence case, 2–6 words, ≠ cell's inner `**bold**` caption, ≠ diagram captions) + exactly one practitioner-voice sentence (what, why). Section with ≤1 (0 Header, 1 Setup, 6 Summary, 7 References, single-diagram section): exactly one such cell, bare sentence, no `###`, above the non-markdown cell if any else directly below the section heading — same voice, one sentence, same distinctness. No repeat of the section intro or a diagram caption; no cell with two intros.
 
@@ -62,8 +62,7 @@ Unit = **(instrument, theme)**; settle both before writing. Check the project fi
 - `references/code-reuse-by-import.md` — notebook vs `common/` split, publishing and importing `@app.function`. **Before code.**
 - `references/theme-ladder.md` — T1–T14 content, instrument ladder, coverage matrix, notation, naming.
 - `references/front-middle-office-applications.md` — desk map, per-theme catalogue, output and control patterns, regulatory rule, desk x theme matrix (§6), how to write the applications section (§7). **Before §5.**
-- `references/marimo-quantlib-rules.md` — reactivity, static exploration, reproducibility, QuantLib conventions and pitfalls.
-- `references/quantlib-144-api-notes.md` — verified 1.44 signatures and traps: dates and enums, bond risk functions, handles, SwaptionHelper calibration, simulation, RiskStatistics.
+- `references/marimo-quantlib-rules.md` — reactivity, static exploration, reproducibility, QuantLib conventions.
 - `references/mermaid-diagrams.md` — rules, vocabulary, diagram type per job, T1–T14 menu, patterns, import graph. **Before any diagram.**
 - `assets/notebook_template.py` — runnable T3 European option, publishing functions, front (quoting) and middle (IPV) examples.
 - `assets/examples/european_option_t2_modeling.py` — upstream publishing market/instrument builders.
