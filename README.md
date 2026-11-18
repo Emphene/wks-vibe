@@ -7,8 +7,8 @@ Central Skills
 in a `.agents/skills/` git subtree, and can publish everything it learns back
 so every other agent absorbs it. The subtree sits in **this agent CLI's
 native skill-discovery directory** (`.agents/skills/` for OpenCode, Oh My Pi,
-MiMo Code, Pi and Vibe, `.claude/skills/` for Claude Code), so the agent
-itself loads the synced skills directly — no manual registration step.
+MiMo Code, Pi, Vibe and Codex, `.claude/skills/` for Claude Code), so the
+agent itself loads the synced skills directly — no manual registration step.
 
 > **Generated file.** Rendered from `.agents/skills/templates/README.md.tmpl`
 > by `sync-docs` (runs automatically on every skills-sync `pull`).
@@ -22,7 +22,7 @@ central-skills (Central Skills)
         ▲            ▲
    subtree push   subtree pull (NEVER squashed)
         │            │
-wks-opencode            wks-claude            wks-omp           wks-mimo          wks-pi            wks-vibe        (future agents: same pattern)
+wks-opencode        wks-claude          wks-omp             wks-mimo            wks-pi              wks-vibe            wks-codex           (future agents: same pattern)
 ```
 
 - **`skills-split`** carries *only* the skills tree, so subtree push/pull stays

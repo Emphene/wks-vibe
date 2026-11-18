@@ -15,9 +15,9 @@ Instructions for AI agents working in this repository.
   (`sync_engine.py`), and the `templates/` folder this file was rendered from.
   The directory name is not arbitrary: it is **this agent CLI's native
   skill-discovery directory** (`.agents/skills/` for OpenCode, Oh My Pi,
-  MiMo Code, Pi and Vibe, `.claude/skills/` for Claude Code), so the synced
-  skills are picked up and loaded by the agent working in this workspace
-  without any manual wiring.
+  MiMo Code, Pi, Vibe and Codex, `.claude/skills/` for Claude Code), so the
+  synced skills are picked up and loaded by the agent working in this
+  workspace without any manual wiring.
   The engine auto-detects the prefix from its own location (override:
   `AGENT_SKILLS_DIR` env var or `--prefix` flag), so the same engine file
   works unchanged in every agent repo.
@@ -44,7 +44,7 @@ central-skills (Central Skills)
         ▲            ▲
    subtree push   subtree pull (NEVER squashed)
         │            │
-wks-opencode            wks-claude            wks-omp           wks-mimo          wks-pi            wks-vibe        (future agents: same pattern)
+wks-opencode        wks-claude          wks-omp             wks-mimo            wks-pi              wks-vibe            wks-codex           (future agents: same pattern)
 ```
 
 - `skills-split` carries *only* the skills tree; that is what keeps subtree
@@ -55,7 +55,8 @@ wks-opencode            wks-claude            wks-omp           wks-mimo        
   refreshed by `promote`. Both lines stay ancestry-linked, so a `push` from
   here is always a fast-forward.
 - Everything under `.agents/skills/` is visible to every agent in the network
-  (`wks-opencode`, `wks-claude`, `wks-omp`, `wks-mimo`, `wks-pi`, `wks-vibe`, …). Treat it as a shared
+  (`wks-opencode`, `wks-claude`, `wks-omp`, `wks-mimo`, `wks-pi`, `wks-vibe`,
+  `wks-codex`, …). Treat it as a shared
   publish/subscribe channel, not as private scratch space.
 
 ## When to sync skills
@@ -159,5 +160,5 @@ uv venv && uv pip install GitPython                                   # one-time
 
 The `subtree add` line must never gain `--squash` (see rules above). Root
 docs and `requirements.txt` need no copying — `sync-docs` renders them from
-the templates. See also `wks-claude`, `wks-mimo`, `wks-pi` and
-`wks-vibe`, which were onboarded this way.
+the templates. See also `wks-claude`, `wks-mimo`, `wks-pi`, `wks-vibe`
+and `wks-codex`, which were onboarded this way.
