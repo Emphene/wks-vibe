@@ -28,8 +28,8 @@ _spec.loader.exec_module(engine)
 
 # Setup environment details
 LOCAL_WORKSPACE = os.getcwd()
-# PAT is never hardcoded: credentials come from git's credential helper
-# (`git config --global credential.helper store`, fed once with a repo-scoped PAT).
+# No token is hardcoded: git authenticates over SSH with the key held by
+# `ssh-agent` (Phase 2 of the AI Skills Architecture guide).
 AUTHENTICATED_CENTRAL_REPO = os.environ.get("CENTRAL_SKILLS_REPO", engine.CENTRAL_SKILLS_URL)
 
 print("--- AGENT INITIALIZATION ---")
