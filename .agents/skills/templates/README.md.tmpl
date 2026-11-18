@@ -2,7 +2,7 @@
 
 {{AGENT_NAME}} — agent workspace wired into the **Centralized AI Skills
 Architecture**: this repo mirrors the shared QuantLib/marimo skills from the
-Central Brain
+Central Skills
 ([`Emphene/central-skills`](https://github.com/Emphene/central-skills))
 in a `{{SKILLS_DIR}}/` git subtree, and can publish everything it learns back
 so every other agent absorbs it. The subtree sits in **this agent CLI's
@@ -16,7 +16,7 @@ itself loads the synced skills directly — no manual registration step.
 ## Architecture
 
 ```
-central-skills (Central Brain)
+central-skills (Central Skills)
  ├─ main .............. whole project; .agents/skills/ = mirror of the skills line
  └─ skills-split ...... skills-only publishing line (canonical, orphan branch)
         ▲            ▲
@@ -27,9 +27,9 @@ wks-opencode            wks-claude            wks-omp           wks-mimo        
 
 - **`skills-split`** carries *only* the skills tree, so subtree push/pull stays
   fast-forward in both directions. Pushing agent changes directly onto the
-  Central Brain's `main` would be non-fast-forward (`main` holds the whole
+  Central Skills' `main` would be non-fast-forward (`main` holds the whole
   project) and GitHub would reject it.
-- **`main` in the Central Brain** is a *mirror* of `skills-split` under
+- **`main` in Central Skills** is a *mirror* of `skills-split` under
   `.agents/skills/`, updated by `promote` (a history-linked, ours-strategy
   merge), so the skills stay browsable and editable there.
 - Both branches are kept ancestry-linked, which is what makes every
@@ -43,8 +43,8 @@ wks-opencode            wks-claude            wks-omp           wks-mimo        
 | `main.py` | Orchestrator demo: pull → run task → publish skill edits |
 | `AGENTS.md` | Agent instructions — **rendered** from `{{SKILLS_DIR}}/templates/AGENTS.md.tmpl` |
 | `README.md` | This file — **rendered** from `{{SKILLS_DIR}}/templates/README.md.tmpl` |
-| `requirements.txt` | **Rendered** from the Central Brain's `uv.lock` export; drives `sync-env` |
-| [`AI Skills Architecture.md`](https://github.com/Emphene/central-skills/blob/main/AI%20Skills%20Architecture.md) | As-built setup guide — hosted in the Central Brain, never copied into agent repos |
+| `requirements.txt` | **Rendered** from Central Skills' `uv.lock` export; drives `sync-env` |
+| [`AI Skills Architecture.md`](https://github.com/Emphene/central-skills/blob/main/AI%20Skills%20Architecture.md) | As-built setup guide — hosted in Central Skills, never copied into agent repos |
 | `.venv/` | Python environment (gitignored), kept in sync by `sync-env` |
 
 ## Quickstart
@@ -75,14 +75,14 @@ python .agents/skills/sync_engine.py export-requirements              # uv.lock 
 ```
 
 When to sync: **pull at session start**, **`sync-env` right after (or whenever
-the Central Brain published a dependency upgrade)**, **push after updating a
+Central Skills published a dependency upgrade)**, **push after updating a
 skill** (see [AGENTS.md](AGENTS.md)), and ask the user to run **`promote`**
-periodically — skill edits only reach the Central Brain's `main` after a
+periodically — skill edits only reach Central Skills' `main` after a
 promote.
 
 ### Dependency upgrades (e.g. quantlib)
 
-Dependencies flow one way, from the Central Brain's `uv.lock`:
+Dependencies flow one way, from Central Skills' `uv.lock`:
 
 ```bash
 # in central-skills

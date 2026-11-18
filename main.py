@@ -2,9 +2,9 @@
 main.py — Vibe (wks-vibe) orchestrator loop wired to the Centralized AI
 Skills Architecture.
 
-On startup it absorbs the latest shared skills from the Central Brain
+On startup it absorbs the latest shared skills from Central Skills
 (central-skills), runs its task, and publishes skill updates back to
-the Central Brain for every other agent to pick up.
+Central Skills for every other agent to pick up.
 """
 
 import importlib.util
@@ -30,7 +30,7 @@ _spec.loader.exec_module(engine)
 LOCAL_WORKSPACE = os.getcwd()
 # PAT is never hardcoded: credentials come from git's credential helper
 # (`git config --global credential.helper store`, fed once with a repo-scoped PAT).
-AUTHENTICATED_CENTRAL_REPO = os.environ.get("CENTRAL_SKILLS_REPO", engine.CENTRAL_BRAIN_URL)
+AUTHENTICATED_CENTRAL_REPO = os.environ.get("CENTRAL_SKILLS_REPO", engine.CENTRAL_SKILLS_URL)
 
 print("--- AGENT INITIALIZATION ---")
 # 1. Pull the latest skills from other agents on startup
@@ -38,7 +38,7 @@ sync_status = engine.auto_pull_latest_skills(LOCAL_WORKSPACE, AUTHENTICATED_CENT
 print(sync_status)
 
 # 1b. Make the venv reflect the shared requirements.txt (e.g. after the
-#     Central Brain published a quantlib upgrade)
+#     Central Skills published a quantlib upgrade)
 print(engine.sync_env(LOCAL_WORKSPACE))
 
 print("\n--- AGENT RUNNING WORKSPACE TASK ---")
@@ -60,7 +60,7 @@ else:
     print(f"📝 Agent updated {skills_file_path.relative_to(LOCAL_WORKSPACE)}.")
 
 print("\n--- AUTOMATED UPSTREAM SYNC ---")
-# 3. Trigger the automatic push back to the Central Brain
+# 3. Trigger the automatic push back to Central Skills
 push_status = engine.auto_push_skills(
     agent_repo_path=LOCAL_WORKSPACE,
     central_repo_url=AUTHENTICATED_CENTRAL_REPO,
