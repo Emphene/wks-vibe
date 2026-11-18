@@ -102,7 +102,7 @@ python .agents/skills/sync_engine.py central-push -m "deps: upgrade quantlib to 
    as non-fast-forward. This repo's subtree was added with:
 
    ```bash
-   git subtree add --prefix={{SKILLS_DIR}}/ https://github.com/Emphene/central-skills.git skills-split
+   git subtree add --prefix={{SKILLS_DIR}}/ git@github.com:Emphene/central-skills.git skills-split
    ```
 
 2. Never `git push --force` to `skills-split`.
@@ -117,13 +117,16 @@ python .agents/skills/sync_engine.py central-push -m "deps: upgrade quantlib to 
 
 ## Authentication
 
-Pushes are unattended: the PAT (repo scope) is stored once via
+Pushes are unattended: git authenticates over **SSH** with the key the
+machine keeps in `ssh-agent` — registered once on the GitHub account (in
+Docker Sandboxes the agent is *forwarded* into the VM, so no secret is copied
+in):
 
 ```bash
-git config --global credential.helper store
-printf 'protocol=https\nhost=github.com\nusername=Emphene\npassword=<PAT>\n' | git credential approve
+ssh-add -l                    # key loaded? else: ssh-add ~/.ssh/id_ed25519
+ssh -T git@github.com         # expect: Hi Emphene!
 ```
 
-No token is embedded in any file or remote URL. See the
+No token is embedded in any file, remote URL, or commit. See the
 [AI Skills Architecture guide](https://github.com/Emphene/central-skills/blob/main/AI%20Skills%20Architecture.md)
 Phase 2.

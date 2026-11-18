@@ -3,7 +3,7 @@ sync_engine.py — synchronization engine for the Centralized AI Skills Architec
 
 Topology
 --------
-Central Skills: https://github.com/Emphene/central-skills.git
+Central Skills: git@github.com:Emphene/central-skills.git
   * branch ``main``          — the whole project (notebooks/, docs/, .agents/skills/, ...)
   * directory ``.agents/skills/`` — the shared, cross-agent skills (SKILL.md folders)
   * branch ``skills-split``  — an orphan branch containing ONLY the skills tree.
@@ -66,7 +66,7 @@ from git import GitCommandError, Repo
 # --------------------------------------------------------------------------
 # Defaults
 # --------------------------------------------------------------------------
-CENTRAL_SKILLS_URL = "https://github.com/Emphene/central-skills.git"
+CENTRAL_SKILLS_URL = "git@github.com:Emphene/central-skills.git"
 SPLIT_BRANCH = "skills-split"           # branch carrying ONLY the skills tree
 FALLBACK_AGENT_PREFIX = "shared_skills/"  # used only when no enclosing repo is found
 CENTRAL_PREFIX = ".agents/skills/"      # where skills live in Central Skills' main
