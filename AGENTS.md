@@ -51,7 +51,7 @@ wks-opencode            wks-claude            wks-omp           wks-mimo        
   push/pull fast-forward in both directions (a push onto Central Skills'
   `main` would be non-fast-forward and rejected, since `main` holds the whole
   project).
-- The Central Skills' `.agents/skills/` is a *mirror* of `skills-split`,
+- Central Skills' `.agents/skills/` is a *mirror* of `skills-split`,
   refreshed by `promote`. Both lines stay ancestry-linked, so a `push` from
   here is always a fast-forward.
 - Everything under `.agents/skills/` is visible to every agent in the network
@@ -120,7 +120,7 @@ PAT in code, URLs, or commits.
 
 ## Sync rules
 
-- The Central Skills is the source of truth; `skills-split` is its
+- Central Skills is the source of truth; `skills-split` is its
   skills-only publishing branch. Never `git push --force` to it.
 - Never run `git subtree pull/add ... --squash` in this repo — it severs the
   shared history and makes every subsequent subtree push fail as
