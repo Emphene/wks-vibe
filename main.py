@@ -15,7 +15,7 @@ from pathlib import Path
 # the directory the agent CLI itself scans for skills (OpenCode, Oh My Pi,
 # MiMo Code and Pi scan `.agents/skills/`; Claude Code scans
 # `.claude/skills/`), which is also where the git subtree from the Central
-# Brain lands. The name is a dotted directory that no `import` statement can
+# Skills lands. The name is a dotted directory that no `import` statement can
 # express, hence importlib. This is the only line to adjust when onboarding
 # a new agent CLI.
 SKILLS_DIR = Path(__file__).resolve().parent / ".agents" / "skills"

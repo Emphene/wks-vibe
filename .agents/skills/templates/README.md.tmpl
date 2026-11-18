@@ -112,7 +112,7 @@ python .agents/skills/sync_engine.py central-push -m "deps: upgrade quantlib to 
 5. Don't hand-edit root `AGENTS.md`/`README.md` — they are generated from
    `{{SKILLS_DIR}}/templates/`; change the template and republish instead.
 6. Don't hand-edit root `requirements.txt` — it is exported from the Central
-   Brain's `uv.lock`; upgrade via `export-requirements` + `central-push`
+   Skills' `uv.lock`; upgrade via `export-requirements` + `central-push`
    there, then `pull` + `sync-env` here.
 
 ## Authentication
