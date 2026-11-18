@@ -1,4 +1,4 @@
-# AGENTS.md — agent-vibe
+# AGENTS.md — wks-vibe
 
 Instructions for AI agents working in this repository.
 
@@ -10,7 +10,7 @@ Instructions for AI agents working in this repository.
 ## Repository layout
 
 - `.agents/skills/` — a **git subtree** mirrored from the Central Brain
-  (`Emphene/central-brain`, branch `skills-split`). Contains shared
+  (`Emphene/central-skills`, branch `skills-split`). Contains shared
   QuantLib/marimo skills (each folder has a `SKILL.md`), the sync engine
   (`sync_engine.py`), and the `templates/` folder this file was rendered from.
   The directory name is not arbitrary: it is **this agent CLI's native
@@ -31,20 +31,20 @@ Instructions for AI agents working in this repository.
   `.agents/skills/templates/` via `sync-docs`; do not hand-edit.
 - The as-built guide for this network lives in the Central Brain (it is
   never copied into agent repos):
-  [`AI Skills Architecture.md`](https://github.com/Emphene/central-brain/blob/main/AI%20Skills%20Architecture.md)
+  [`AI Skills Architecture.md`](https://github.com/Emphene/central-skills/blob/main/AI%20Skills%20Architecture.md)
 
 ## The architecture you are part of
 
 This repo is one node of a multi-agent skills network:
 
 ```
-central-brain (Central Brain)
+central-skills (Central Brain)
  ├─ main .............. whole project; .agents/skills/ = mirror of the skills line
  └─ skills-split ...... skills-only publishing line (canonical, orphan branch)
         ▲            ▲
    subtree push   subtree pull (NEVER squashed)
         │            │
-agent-oc            agent-cc            agent-omp           agent-mimo          agent-pi            agent-vibe        (future agents: same pattern)
+wks-opencode            wks-claude            wks-omp           wks-mimo          wks-pi            wks-vibe        (future agents: same pattern)
 ```
 
 - `skills-split` carries *only* the skills tree; that is what keeps subtree
@@ -55,7 +55,7 @@ agent-oc            agent-cc            agent-omp           agent-mimo          
   refreshed by `promote`. Both lines stay ancestry-linked, so a `push` from
   here is always a fast-forward.
 - Everything under `.agents/skills/` is visible to every agent in the network
-  (`agent-oc`, `agent-cc`, `agent-omp`, `agent-mimo`, `agent-pi`, `agent-vibe`, …). Treat it as a shared
+  (`wks-opencode`, `wks-claude`, `wks-omp`, `wks-mimo`, `wks-pi`, `wks-vibe`, …). Treat it as a shared
   publish/subscribe channel, not as private scratch space.
 
 ## When to sync skills
@@ -87,14 +87,14 @@ agent-oc            agent-cc            agent-omp           agent-mimo          
    (e.g. `.agents/skills/marimo-notebook/references/`), then publish it:
 
    ```bash
-   .venv/bin/python .agents/skills/sync_engine.py push -m "agent-vibe-sync: <what changed and why>"
+   .venv/bin/python .agents/skills/sync_engine.py push -m "wks-vibe-sync: <what changed and why>"
    ```
 
 4. **Periodically (ask the user)** — skill edits only reach the Central Brain's
    `main` branch after a promote, run from the Central Brain checkout:
 
    ```bash
-   python .agents/skills/sync_engine.py promote   # in central-brain
+   python .agents/skills/sync_engine.py promote   # in central-skills
    ```
 
    A skill edit made *directly* in the Central Brain's `main` must be
@@ -112,7 +112,7 @@ agent-oc            agent-cc            agent-omp           agent-mimo          
 | `promote` | Central Brain | Fetches `skills-split`, records it as a merge parent (`-s ours --allow-unrelated-histories`), overlays `.agents/skills/`, amends the merge commit, pushes `main` |
 | `central-push -m "..."` | Central Brain | Commits edits under `.agents/skills/`, links any newer `skills-split` commits, pushes `main` + subtree |
 
-The central URL defaults to `https://github.com/Emphene/central-brain.git`
+The central URL defaults to `https://github.com/Emphene/central-skills.git`
 (override with the `CENTRAL_SKILLS_REPO` env var). The agent name/id used for
 doc rendering default to the `origin` repo name (override with `AGENT_NAME` /
 `AGENT_ID`). Credentials come from git's credential helper — never hardcode a
@@ -150,7 +150,7 @@ PAT in code, URLs, or commits.
 ```bash
 git clone https://github.com/Emphene/<new-agent-repo>
 cd <new-agent-repo>
-git subtree add --prefix=.agents/skills/ https://github.com/Emphene/central-brain.git skills-split
+git subtree add --prefix=.agents/skills/ https://github.com/Emphene/central-skills.git skills-split
 cp <path-to-existing-agent>/{main.py,.gitignore} .
 uv venv && uv pip install GitPython                                   # one-time bootstrap interpreter
 .venv/bin/python .agents/skills/sync_engine.py sync-docs --push         # renders AGENTS.md + README.md + requirements.txt
@@ -159,5 +159,5 @@ uv venv && uv pip install GitPython                                   # one-time
 
 The `subtree add` line must never gain `--squash` (see rules above). Root
 docs and `requirements.txt` need no copying — `sync-docs` renders them from
-the templates. See also `agent-cc`, `agent-mimo`, `agent-pi` and
-`agent-vibe`, which were onboarded this way.
+the templates. See also `wks-claude`, `wks-mimo`, `wks-pi` and
+`wks-vibe`, which were onboarded this way.

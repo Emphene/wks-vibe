@@ -1,9 +1,9 @@
 """
-main.py — Vibe (agent-vibe) orchestrator loop wired to the Centralized AI
+main.py — Vibe (wks-vibe) orchestrator loop wired to the Centralized AI
 Skills Architecture.
 
 On startup it absorbs the latest shared skills from the Central Brain
-(central-brain), runs its task, and publishes skill updates back to
+(central-skills), runs its task, and publishes skill updates back to
 the Central Brain for every other agent to pick up.
 """
 
@@ -64,6 +64,6 @@ print("\n--- AUTOMATED UPSTREAM SYNC ---")
 push_status = engine.auto_push_skills(
     agent_repo_path=LOCAL_WORKSPACE,
     central_repo_url=AUTHENTICATED_CENTRAL_REPO,
-    commit_message="agent-vibe-sync: documented QuantLib evaluation-date rule.",
+    commit_message="wks-vibe-sync: documented QuantLib evaluation-date rule.",
 )
 print(push_status)
