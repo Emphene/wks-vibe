@@ -3,7 +3,7 @@ sync_engine.py — synchronization engine for the Centralized AI Skills Architec
 
 Topology
 --------
-Central Brain: https://github.com/Emphene/central-skills.git
+Central Skills: https://github.com/Emphene/central-skills.git
   * branch ``main``          — the whole project (notebooks/, docs/, .agents/skills/, ...)
   * directory ``.agents/skills/`` — the shared, cross-agent skills (SKILL.md folders)
   * branch ``skills-split``  — an orphan branch containing ONLY the skills tree.
@@ -42,18 +42,18 @@ Workflow
   1. On startup    -> auto_pull_latest_skills(...)         # absorb skills from other agents
   2. Agent learns  -> writes/edits files under <skills-dir>/
   3. After a task  -> auto_push_skills(...)                # publish skill edits to skills-split
-  4. Skill edits made INSIDE the Central Brain (main branch)
+  4. Skill edits made INSIDE Central Skills (main branch)
        -> push_central_skills_edit(...)                    # publish to skills-split
   5. Periodically  -> promote_skills_split_to_main(...)    # fold skills-split back
                                                              into main at .agents/skills/
   6. Agent docs    -> render_agent_docs(...) / `sync-docs`  # root AGENTS.md + README.md
                        are rendered from <skills-dir>/templates/*.tmpl so every
                        agent's docs stay aligned; runs automatically on every pull.
-  7. Env sync      -> export_requirements(...) (Central Brain: uv export from its
+  7. Env sync      -> export_requirements(...) (Central Skills: uv export from its
                        uv.lock into templates/requirements.txt.tmpl) and sync_env(...)
-                       (agents: uv pip sync -r requirements.txt; Central Brain: uv sync)
+                       (agents: uv pip sync -r requirements.txt; Central Skills: uv sync)
                        so every venv reflects the same pinned dependency set —
-                       e.g. after a quantlib upgrade in the Central Brain.
+                       e.g. after a quantlib upgrade in Central Skills.
 """
 
 import os
@@ -65,10 +65,10 @@ from git import GitCommandError, Repo
 # --------------------------------------------------------------------------
 # Defaults
 # --------------------------------------------------------------------------
-CENTRAL_BRAIN_URL = "https://github.com/Emphene/central-skills.git"
+CENTRAL_SKILLS_URL = "https://github.com/Emphene/central-skills.git"
 SPLIT_BRANCH = "skills-split"           # branch carrying ONLY the skills tree
 FALLBACK_AGENT_PREFIX = "shared_skills/"  # used only when no enclosing repo is found
-CENTRAL_PREFIX = ".agents/skills/"      # where skills live in the Central Brain's main
+CENTRAL_PREFIX = ".agents/skills/"      # where skills live in Central Skills' main
 
 
 def resolve_agent_prefix(prefix: str | None = None) -> str:
@@ -118,13 +118,13 @@ def auto_push_skills(
     prefix: str | None = None,
     split_branch: str = SPLIT_BRANCH,
 ) -> str:
-    """Stage, commit and publish a shared-skill update to the Central Brain.
+    """Stage, commit and publish a shared-skill update to Central Skills.
 
     Commits any changes under ``prefix`` (default: this engine file's own
     directory, i.e. the agent CLI's skill-discovery dir), pushes them to the
-    agent repo's own origin, then subtree-pushes to the Central Brain's
+    agent repo's own origin, then subtree-pushes to Central Skills'
     ``skills-split`` branch. Run ``promote_skills_split_to_main`` in the
-    Central Brain afterwards to fold the update into ``main``.
+    Central Skills afterwards to fold the update into ``main``.
     """
     prefix = resolve_agent_prefix(prefix)
     try:
@@ -143,13 +143,13 @@ def auto_push_skills(
         print("🚀 Pushing to Agent's repository...")
         repo.remote(name="origin").push()
 
-        print(f"🚀 Pushing subtree to Central Brain branch '{split_branch}'...")
+        print(f"🚀 Pushing subtree to Central Skills branch '{split_branch}'...")
         repo.git.subtree("push", f"--prefix={prefix}", central_repo_url, split_branch)
 
         return (
-            f"🎉 Success! Skill edits pushed to the Central Brain "
+            f"🎉 Success! Skill edits pushed to Central Skills "
             f"(branch '{split_branch}'). Run promote_skills_split_to_main() in "
-            f"the Central Brain to fold them into 'main'."
+            f"Central Skills to fold them into 'main'."
         )
     except GitCommandError as e:
         if "non-fast-forward" in str(e) or "fetch first" in str(e):
@@ -167,7 +167,7 @@ def auto_pull_latest_skills(
     prefix: str | None = None,
     split_branch: str = SPLIT_BRANCH,
 ) -> str:
-    """Pull the latest global skills from the Central Brain into the agent workspace.
+    """Pull the latest global skills from Central Skills into the agent workspace.
 
     Deliberately NOT squashed: the merge keeps the ``skills-split`` commits in
     this repo's history, which is what makes later ``subtree push`` calls
@@ -179,7 +179,7 @@ def auto_pull_latest_skills(
         if repo.is_dirty(untracked_files=True):
             return "⚠️ Warning: Please commit or stash local agent changes first."
 
-        print(f"🔄 Pulling latest shared skills from Central Brain ('{split_branch}')...")
+        print(f"🔄 Pulling latest shared skills from Central Skills ('{split_branch}')...")
         repo.git.subtree(
             "pull",
             f"--prefix={prefix}",
@@ -216,7 +216,7 @@ def _link_split_into_main(
         return False  # HEAD already contains every skills-split commit
     print(f"🔗 Linking '{split_branch}' into main (ours tree kept)...")
     # skills-split is an orphan branch, so the very first link in a fresh
-    # Central Brain has no common ancestor — git needs explicit permission.
+    # Central Skills has no common ancestor — git needs explicit permission.
     repo.git.merge(
         "-s", "ours", "--allow-unrelated-histories", split_branch, "-m", message
     )
@@ -230,9 +230,9 @@ def promote_skills_split_to_main(
     prefix: str = CENTRAL_PREFIX,
     split_branch: str = SPLIT_BRANCH,
 ) -> str:
-    """Fold the Central Brain's ``skills-split`` branch back into ``main``.
+    """Fold Central Skills' ``skills-split`` branch back into ``main``.
 
-    Must be run INSIDE the Central Brain checkout (or with --repo pointing at
+    Must be run INSIDE Central Skills checkout (or with --repo pointing at
     it). Procedure:
       1. fetch skills-split;
       2. record it as a merge parent with the 'ours' strategy (links history);
@@ -249,7 +249,7 @@ def promote_skills_split_to_main(
     try:
         repo = Repo(central_repo_path)
         if repo.is_dirty(untracked_files=True):
-            return "⚠️ Warning: Please commit or stash Central Brain changes first."
+            return "⚠️ Warning: Please commit or stash Central Skills changes first."
 
         print(f"🔄 Fetching '{split_branch}' from {central_repo_url}...")
         linked = _link_split_into_main(repo, central_repo_url, split_branch, commit_message)
@@ -305,7 +305,7 @@ def _publish_prefix_tree(
 
     Returns False when the split tip already mirrors main's prefix.
 
-    This replaces ``git subtree push`` for Central-Brain publishing: subtree
+    This replaces ``git subtree push`` for Central Skills publishing: subtree
     split rebuilds main's *entire* prefix history (main-side commits are not
     part of the split lineage) and the resulting chain is never a descendant
     of ``skills-split``, so GitHub rejects it as non-fast-forward. A single
@@ -333,7 +333,7 @@ def push_central_skills_edit(
     prefix: str = CENTRAL_PREFIX,
     split_branch: str = SPLIT_BRANCH,
 ) -> str:
-    """Publish skill edits made directly in the Central Brain's ``main`` branch.
+    """Publish skill edits made directly in Central Skills' ``main`` branch.
 
     Steps: fetch ``skills-split`` (refusing to publish if agents have skill
     edits you haven't promoted yet), commit pending changes under ``prefix``, push
@@ -370,7 +370,7 @@ def push_central_skills_edit(
                        f"merge: record published {split_branch} tip")
         repo.remote(name="origin").push()
         return (
-            f"🎉 Success! Central Brain skills published to '{split_branch}'. "
+            f"🎉 Success! Shared skills published to '{split_branch}' in Central Skills. "
             f"Other agents absorb them via auto_pull_latest_skills()."
         )
     except GitCommandError as e:
@@ -382,14 +382,14 @@ DOC_TEMPLATE_DIR = "templates"  # lives at <skills-dir>/templates/
 REQUIREMENTS_HEADER = """\
 # GENERATED FILE — do not edit by hand.
 #
-# Source of truth: the Central Brain (`central-skills`) pyproject.toml
+# Source of truth: Central Skills (`central-skills`) pyproject.toml
 # + uv.lock — that is the only place humans edit dependencies. This file is
 # their exact-pin transport to the agents, exported by
 # `sync_engine.py export-requirements` (uv export) and rendered into each
 # agent's root by `sync-docs` (automatic on every `pull`).
 #
 # Dependency change workflow:
-#   1. In the Central Brain, edit pyproject.toml (or: uv lock --upgrade-package
+#   1. In Central Skills, edit pyproject.toml (or: uv lock --upgrade-package
 #      <pkg>), then `uv sync`
 #   2. <engine> export-requirements
 #   3. <engine> central-push -m "deps: <what changed>"
@@ -413,7 +413,7 @@ def _uv_env(root: str) -> dict[str, str]:
     ``uv pip`` honours ``VIRTUAL_ENV`` from the caller's shell, so an engine
     run from a shell that has another project's venv active would sync — and
     prune — THAT environment instead of this repo's (an agent's ``sync-env``
-    could strip the Central Brain's dev dependencies, for instance). Pin the
+    could strip Central Skills' dev dependencies, for instance). Pin the
     variable to ``<root>/.venv``, or drop it when that venv does not exist
     yet (so ``uv venv`` creates it in the repo, not at the stale path).
     """
@@ -429,7 +429,7 @@ def _uv_env(root: str) -> dict[str, str]:
 def sync_env(repo_path: str) -> str:
     """Make the local ``.venv`` reflect the repo's dependency manifest.
 
-    * Central Brain (``pyproject.toml`` + ``uv.lock`` present) -> ``uv sync``
+    * Central Skills (``pyproject.toml`` + ``uv.lock`` present) -> ``uv sync``
     * Agents (``requirements.txt`` present, created from the template export)
       -> ``uv venv`` if needed, then ``uv pip sync -r requirements.txt`` so the
       venv matches the file exactly (installs, upgrades AND removes strays).
@@ -438,7 +438,7 @@ def sync_env(repo_path: str) -> str:
     (see ``_uv_env``), so a foreign venv active in the caller's shell can
     never be the environment that gets synced.
 
-    Run this after ``pull`` — especially after the Central Brain publishes a
+    Run this after ``pull`` — especially after Central Skills publishes a
     dependency upgrade (e.g. a new quantlib).
     """
     uv = _find_uv()
@@ -476,7 +476,7 @@ def sync_env(repo_path: str) -> str:
 def export_requirements(
     central_repo_path: str, prefix: str = CENTRAL_PREFIX
 ) -> str:
-    """Central Brain only: regenerate ``<prefix>templates/requirements.txt.tmpl``
+    """Central Skills only: regenerate ``<prefix>templates/requirements.txt.tmpl``
     from ``uv.lock`` so every agent inherits the exact pinned dependency set.
 
     Publish the result with ``push_central_skills_edit`` (``central-push``);
@@ -489,7 +489,7 @@ def export_requirements(
         and os.path.exists(os.path.join(root, "uv.lock"))
     ):
         return (
-            "❌ export-requirements must run in the Central Brain "
+            "❌ export-requirements must run in Central Skills "
             "(pyproject.toml + uv.lock required)."
         )
     out_dir = os.path.join(root, prefix, DOC_TEMPLATE_DIR)
@@ -598,9 +598,9 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="Synchronize an agent's skills directory with the Central Brain."
+        description="Synchronize an agent's skills directory with Central Skills."
     )
-    default_central = os.environ.get("CENTRAL_SKILLS_REPO", CENTRAL_BRAIN_URL)
+    default_central = os.environ.get("CENTRAL_SKILLS_REPO", CENTRAL_SKILLS_URL)
     sub = parser.add_subparsers(dest="command", required=True)
 
     def _add_prefix(p):
@@ -611,7 +611,7 @@ if __name__ == "__main__":
                  "engine's location, or $AGENT_SKILLS_DIR)",
         )
 
-    p_pull = sub.add_parser("pull", help="Pull latest skills from the Central Brain")
+    p_pull = sub.add_parser("pull", help="Pull latest skills from Central Skills")
     p_pull.add_argument("--repo", default=os.getcwd(), help="Agent repo path")
     p_pull.add_argument("--central", default=default_central)
     _add_prefix(p_pull)
@@ -623,9 +623,9 @@ if __name__ == "__main__":
     _add_prefix(p_push)
 
     p_cpush = sub.add_parser(
-        "central-push", help="Publish skill edits made on main in the Central Brain"
+        "central-push", help="Publish skill edits made on main in Central Skills"
     )
-    p_cpush.add_argument("--repo", default=os.getcwd(), help="Central Brain repo path")
+    p_cpush.add_argument("--repo", default=os.getcwd(), help="Central Skills repo path")
     p_cpush.add_argument("--central", default=default_central)
     p_cpush.add_argument("-m", "--message", required=True, help="Commit message")
 
@@ -639,18 +639,18 @@ if __name__ == "__main__":
     _add_prefix(p_docs)
 
     p_env = sub.add_parser(
-        "sync-env", help="Make .venv reflect requirements.txt (agents) or uv.lock (Central Brain)"
+        "sync-env", help="Make .venv reflect requirements.txt (agents) or uv.lock (Central Skills)"
     )
     p_env.add_argument("--repo", default=os.getcwd(), help="Repo path")
 
     p_exp = sub.add_parser(
         "export-requirements",
-        help="Central Brain only: regenerate templates/requirements.txt.tmpl from uv.lock",
+        help="Central Skills only: regenerate templates/requirements.txt.tmpl from uv.lock",
     )
-    p_exp.add_argument("--repo", default=os.getcwd(), help="Central Brain repo path")
+    p_exp.add_argument("--repo", default=os.getcwd(), help="Central Skills repo path")
 
-    p_prom = sub.add_parser("promote", help="Merge skills-split into main (Central Brain only)")
-    p_prom.add_argument("--repo", default=os.getcwd(), help="Central Brain repo path")
+    p_prom = sub.add_parser("promote", help="Merge skills-split into main (Central Skills only)")
+    p_prom.add_argument("--repo", default=os.getcwd(), help="Central Skills repo path")
     p_prom.add_argument("--central", default=default_central)
     p_prom.add_argument("-m", "--message", default="skills: sync agent skill edits into main")
 
