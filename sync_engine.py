@@ -3,7 +3,7 @@ sync_engine.py — synchronization engine for the Centralized AI Skills Architec
 
 Topology
 --------
-Central Brain: https://github.com/Emphene/central-brain.git
+Central Brain: https://github.com/Emphene/central-skills.git
   * branch ``main``          — the whole project (notebooks/, docs/, .agents/skills/, ...)
   * directory ``.agents/skills/`` — the shared, cross-agent skills (SKILL.md folders)
   * branch ``skills-split``  — an orphan branch containing ONLY the skills tree.
@@ -13,17 +13,17 @@ Central Brain: https://github.com/Emphene/central-brain.git
     changes directly onto ``main`` would be a non-fast-forward push (``main``
     contains the entire project) and GitHub would reject it.
 
-Agent repos (agent-oc, agent-cc, agent-omp, agent-mimo,
-agent-pi, ...)
+Agent repos (wks-opencode, wks-claude, wks-omp, wks-mimo,
+wks-pi, ...)
   * directory ``<skills-dir>/`` — a git subtree fed from ``skills-split``,
     where ``<skills-dir>`` is the agent CLI's NATIVE skill-discovery
     directory, so synced skills are loaded by the agent running in that
     workspace:
-        agent-oc   ->  .agents/skills/    (OpenCode)
-        agent-cc   ->  .claude/skills/    (Claude Code)
-        agent-omp  ->  .agents/skills/    (Oh My Pi)
-        agent-mimo ->  .agents/skills/    (MiMo Code)
-        agent-pi   ->  .agents/skills/    (Pi)
+        wks-opencode   ->  .agents/skills/    (OpenCode)
+        wks-claude   ->  .claude/skills/    (Claude Code)
+        wks-omp  ->  .agents/skills/    (Oh My Pi)
+        wks-mimo ->  .agents/skills/    (MiMo Code)
+        wks-pi   ->  .agents/skills/    (Pi)
     The engine derives the prefix from its own location (see
     ``resolve_agent_prefix``); override with ``AGENT_SKILLS_DIR`` or
     ``--prefix``.
@@ -65,7 +65,7 @@ from git import GitCommandError, Repo
 # --------------------------------------------------------------------------
 # Defaults
 # --------------------------------------------------------------------------
-CENTRAL_BRAIN_URL = "https://github.com/Emphene/central-brain.git"
+CENTRAL_BRAIN_URL = "https://github.com/Emphene/central-skills.git"
 SPLIT_BRANCH = "skills-split"           # branch carrying ONLY the skills tree
 FALLBACK_AGENT_PREFIX = "shared_skills/"  # used only when no enclosing repo is found
 CENTRAL_PREFIX = ".agents/skills/"      # where skills live in the Central Brain's main
@@ -382,7 +382,7 @@ DOC_TEMPLATE_DIR = "templates"  # lives at <skills-dir>/templates/
 REQUIREMENTS_HEADER = """\
 # GENERATED FILE — do not edit by hand.
 #
-# Source of truth: the Central Brain (`central-brain`) pyproject.toml
+# Source of truth: the Central Brain (`central-skills`) pyproject.toml
 # + uv.lock — that is the only place humans edit dependencies. This file is
 # their exact-pin transport to the agents, exported by
 # `sync_engine.py export-requirements` (uv export) and rendered into each

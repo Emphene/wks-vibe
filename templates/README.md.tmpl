@@ -3,7 +3,7 @@
 {{AGENT_NAME}} — agent workspace wired into the **Centralized AI Skills
 Architecture**: this repo mirrors the shared QuantLib/marimo skills from the
 Central Brain
-([`Emphene/central-brain`](https://github.com/Emphene/central-brain))
+([`Emphene/central-skills`](https://github.com/Emphene/central-skills))
 in a `{{SKILLS_DIR}}/` git subtree, and can publish everything it learns back
 so every other agent absorbs it. The subtree sits in **this agent CLI's
 native skill-discovery directory** (`.agents/skills/` for OpenCode, Oh My Pi,
@@ -16,13 +16,13 @@ itself loads the synced skills directly — no manual registration step.
 ## Architecture
 
 ```
-central-brain (Central Brain)
+central-skills (Central Brain)
  ├─ main .............. whole project; .agents/skills/ = mirror of the skills line
  └─ skills-split ...... skills-only publishing line (canonical, orphan branch)
         ▲            ▲
    subtree push   subtree pull (NEVER squashed)
         │            │
-agent-oc            agent-cc            agent-omp           agent-mimo          agent-pi            agent-vibe        (future agents: same pattern)
+wks-opencode            wks-claude            wks-omp           wks-mimo          wks-pi            wks-vibe        (future agents: same pattern)
 ```
 
 - **`skills-split`** carries *only* the skills tree, so subtree push/pull stays
@@ -44,7 +44,7 @@ agent-oc            agent-cc            agent-omp           agent-mimo          
 | `AGENTS.md` | Agent instructions — **rendered** from `{{SKILLS_DIR}}/templates/AGENTS.md.tmpl` |
 | `README.md` | This file — **rendered** from `{{SKILLS_DIR}}/templates/README.md.tmpl` |
 | `requirements.txt` | **Rendered** from the Central Brain's `uv.lock` export; drives `sync-env` |
-| [`AI Skills Architecture.md`](https://github.com/Emphene/central-brain/blob/main/AI%20Skills%20Architecture.md) | As-built setup guide — hosted in the Central Brain, never copied into agent repos |
+| [`AI Skills Architecture.md`](https://github.com/Emphene/central-skills/blob/main/AI%20Skills%20Architecture.md) | As-built setup guide — hosted in the Central Brain, never copied into agent repos |
 | `.venv/` | Python environment (gitignored), kept in sync by `sync-env` |
 
 ## Quickstart
@@ -65,10 +65,10 @@ agent-oc            agent-cc            agent-omp           agent-mimo          
 # agent side (run from an agent repo root)
 .venv/bin/python {{SKILLS_DIR}}/sync_engine.py pull                    # absorb skills + re-render root files
 .venv/bin/python {{SKILLS_DIR}}/sync_engine.py sync-env                # .venv ← requirements.txt (uv pip sync)
-.venv/bin/python {{SKILLS_DIR}}/sync_engine.py push -m "agent-{{AGENT_ID}}-sync: <what/why>"   # publish skill edits
+.venv/bin/python {{SKILLS_DIR}}/sync_engine.py push -m "{{AGENT_NAME}}-sync: <what/why>"   # publish skill edits
 .venv/bin/python {{SKILLS_DIR}}/sync_engine.py sync-docs --push       # render AGENTS.md/README.md only
 
-# central side (run from central-brain)
+# central side (run from central-skills)
 python .agents/skills/sync_engine.py promote                          # fold skills-split back into main
 python .agents/skills/sync_engine.py central-push -m "..."            # publish skill edits made on main
 python .agents/skills/sync_engine.py export-requirements              # uv.lock -> templates/requirements.txt.tmpl
@@ -85,7 +85,7 @@ promote.
 Dependencies flow one way, from the Central Brain's `uv.lock`:
 
 ```bash
-# in central-brain
+# in central-skills
 uv lock --upgrade-package quantlib && uv sync
 python .agents/skills/sync_engine.py export-requirements
 python .agents/skills/sync_engine.py central-push -m "deps: upgrade quantlib to <version>"
@@ -102,7 +102,7 @@ python .agents/skills/sync_engine.py central-push -m "deps: upgrade quantlib to 
    as non-fast-forward. This repo's subtree was added with:
 
    ```bash
-   git subtree add --prefix={{SKILLS_DIR}}/ https://github.com/Emphene/central-brain.git skills-split
+   git subtree add --prefix={{SKILLS_DIR}}/ https://github.com/Emphene/central-skills.git skills-split
    ```
 
 2. Never `git push --force` to `skills-split`.
@@ -125,5 +125,5 @@ printf 'protocol=https\nhost=github.com\nusername=Emphene\npassword=<PAT>\n' | g
 ```
 
 No token is embedded in any file or remote URL. See the
-[AI Skills Architecture guide](https://github.com/Emphene/central-brain/blob/main/AI%20Skills%20Architecture.md)
+[AI Skills Architecture guide](https://github.com/Emphene/central-skills/blob/main/AI%20Skills%20Architecture.md)
 Phase 2.
