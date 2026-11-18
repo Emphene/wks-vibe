@@ -14,7 +14,7 @@ Central Skills: https://github.com/Emphene/central-skills.git
     contains the entire project) and GitHub would reject it.
 
 Agent repos (wks-opencode, wks-claude, wks-omp, wks-mimo,
-wks-pi, ...)
+wks-pi, wks-codex, ...)
   * directory ``<skills-dir>/`` — a git subtree fed from ``skills-split``,
     where ``<skills-dir>`` is the agent CLI's NATIVE skill-discovery
     directory, so synced skills are loaded by the agent running in that
@@ -24,6 +24,7 @@ wks-pi, ...)
         wks-omp  ->  .agents/skills/    (Oh My Pi)
         wks-mimo ->  .agents/skills/    (MiMo Code)
         wks-pi   ->  .agents/skills/    (Pi)
+        wks-codex  ->  .agents/skills/    (Codex CLI)
     The engine derives the prefix from its own location (see
     ``resolve_agent_prefix``); override with ``AGENT_SKILLS_DIR`` or
     ``--prefix``.
@@ -76,7 +77,8 @@ def resolve_agent_prefix(prefix: str | None = None) -> str:
 
     The prefix doubles as the agent CLI's skill-discovery directory, so the
     synced skills are picked up by the agent working in that workspace:
-    ``.agents/skills/`` for an OpenCode, Oh My Pi, MiMo Code or Pi agent,
+    ``.agents/skills/`` for an OpenCode, Oh My Pi, MiMo Code, Pi, Vibe
+    or Codex agent,
     ``.claude/skills/`` for a Claude Code agent.  Resolution order:
 
       1. an explicit ``prefix`` argument / ``--prefix`` CLI flag;
